@@ -72,17 +72,23 @@
             </section>
             <section>
                 <h2>Transportation</h2>
-                <h2 class="fragment">HTTP/HTTP<b>S</b></h2>
+                <ul>
+                    <li class="fragment">HTTP/HTTP<b>S</b></li>
+                </ul>
             </section>
             <section>
                 <h2>Request</h2>
-                <h2 class="fragment">URL or JSON/XML</h2>
+                <ul>
+                    <li class="fragment">URL or JSON/XML</li>
+                </ul>
             </section>
             <section>
                 <h2>Response</h2>
-                <h2 class="fragment">JSON, XML or </h2>
-                <h2 class="fragment">some binairy format</h2>
-                <h2 class="fragment">PDF, JPG,....</h2>
+                <ul>
+                    <li class="fragment">JSON, XML</li>
+                    <li class="fragment">some binairy format</li>
+                    <li class="fragment">PDF, JPG,....</li>
+                </ul>
             </section>
         </section>
         <section>
@@ -116,24 +122,20 @@
                 <h2>then to delete a part of the interface.</h2>
             </section>
         </section>
-
         <section>
-            <p>Use the standard verbs</p>
-            <p>Make sure the service is idempotent</p>
-            <p>Use nouns not actions</p>
-            <p>No single URL</p>
+            <h2>Use the standard verbs</h2>
+            <p>GET, PUT, POST, DELETE</p>
         </section>
-
         <section>
-            <p>Use standards!</p>
-            <p>Date: use ISO standards</p>
-            <p>ISO 8601</p>
+            <h2>Make sure the service is idempotent</h2>
+            <p>The same request should always return the same result</p>
+            <p>and should have the same effect on the application.</p>
         </section>
-
         <section>
-            <p>Client Lib</p>
+            <h2>Use nouns not actions</h2>
+            <p><b>DO</b>: /offer, /report, /book</p>
+            <p><b>DONT</b>: /createOffer, /retrieveReport, /deleteBook</p>
         </section>
-
         <section class="concave">
             <h1>THE END</h1>
         </section>
