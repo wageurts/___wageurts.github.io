@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Presentation Technical meeting - Devoxx</title>
+
+    <meta name="description" content="Presentation Technical meeting - Devoxx">
+    <meta name="author" content="Dennis Geurts">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="css/reveal.min.css">
+    <link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="reveal">
+
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+        <section>
+            <img src="img/DevoxxBelgium2017.jpg"/>
+        </section>
+        <section>
+            <h1>Devoxx 2016</h1>
+            <h3>100% stateless with JWT</h3>
+            <p>Talk by Hubert Sablonnière</p>
+            <p>Techie @ OpenDevise</p>
+            <p>
+                <small>Created by <a href="http://wageurts.github.io">Dennis Geurts</a> / <a
+                        href="http://github.com/wageurts">Github</a></small>
+            </p>
+        </section>
+
+        <section>
+            <section>
+                <h2>What is or what are JWT's?</h2>
+            </section>
+            <section>
+                <section><span><h3>JSON Web Tokens are an open, industry standard <a
+                        href="https://tools.ietf.org/html/rfc7519" target="_blank ">RFC 7159</a> method for representing
+                    claims securely between two parties.</h3></span></section>
+            </section>
+        </section>
+        <section>
+            <section><h2>Claims..?!?!</h2></section>
+            <section>
+                <p>Claims are statements about an entity (typically, the user) and additional metadata.</p>
+            </section>
+            <section>
+                <h2>Different type of claims</h2>
+                <ol>
+                    <li>Resevered claims. (eg. iss, exp)</li>
+                    <li>Public claims. -> IANA JWT reg.</li>
+                    <li>Private claims.</li>
+                </ol>
+            </section>
+        </section>
+        <section>
+            <section><h2>How is a JWT assembled?</h2></section>
+            <section class="fragmented">
+                <h2><span class="fragment highlight-red">HE4D3R</span>.<span
+                        class="fragment highlight-blue">P4YL0AD</span>.<span
+                        class="fragment highlight-green">S1GN4TUR3</span></h2>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>Header</h2>
+                <ol>
+                    <li>Algoritme</li>
+                    <li>Type token</li>
+                </ol>
+            </section>
+            <section>
+                <pre><code data-trim
+                           data-noescape>{
+  "alg": "HS256",
+  "typ": "JWT"
+}</code></pre>
+            </section>
+            <section>
+                <pre><code data-trim
+                           data-noescape>Base64.getEncoder().encode('{"alg":"HS256","typ":"JWT"}');</code></pre>
+                <p>=</p>
+                <pre><code data-trim data-noescape>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9</code></pre>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>Payload</h2>
+                <ol>
+                    <li>claims...</li>
+                    <li>claims...</li>
+                    <li>claims...</li>
+                </ol>
+            </section>
+            <section>
+                <pre><code data-trim
+                           data-noescape>{
+  "iss": "CJIB",
+  "sub": "145978265",
+  "exp": "155978265",
+  "name": "Pluisje",
+  "admin": false
+}</code></pre>
+            </section>
+            <section>
+                <pre><code data-trim
+                           data-noescape>Base64.getEncoder().encode('{"iss":"me","exp":"14566987532", "......"}');</code></pre>
+                <p>=</p>
+                <pre><code data-trim data-noescape>eyJpc3MiOiJNRSIsImV4cCI6IjE0NTk4NzU2MzIxIiwiLi4uLi4uIn0=</code></pre>
+            </section>
+        </section>
+
+        <section>
+            <section>
+                <h2>Signature</h2>
+                <ol>
+                    <li>Shared secret</li>
+                    <li>pub-priv key</li>
+                    <li>HE4D3R.P4YL0AD</li>
+                </ol>
+            </section>
+            <section>
+                <pre><code data-trim
+                           data-noescape>
+            String secret = "secret";
+            String message = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJNRSIsImV4cCI6IjE0NTk4NzU2MzIxIiwiLi4uLi4uIn0=";
+
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+            sha256_HMAC.init(secret_key);
+
+            Base64.getEncoder().encode(sha256_HMAC.doFinal(message.getBytes()));</code></pre>
+                <p>=</p>
+                <pre><code data-trim data-noescape>jY06rX3XcN/0L+5TdVD6dNxTZAN0fcqQLxXfxHDEomQ=</code></pre>
+            </section>
+        </section>
+
+        <section>
+            <section class="fragmented">
+                <h2>Oke...</h2>
+                <span class="fragment">
+                <h2>Add The entire token</h2>
+                <h2>to the http header.</h2>
+                    </span>
+            </section>
+            <section>
+                <h2>HTTP Header</h2>
+                <pre><code data-trim
+                           data-noescape>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJNRSIsImV4cCI6IjE0NTk4NzU2MzIxIiwiLi4uLi4uIn0=.jY06rX3XcN/0L+5TdVD6dNxTZAN0fcqQLxXfxHDEomQ=</code></pre>
+            </section>
+        </section>
+
+        <section>
+            <section>
+                <h2>Why use JWT</h2>
+            </section>
+            <section>
+                <h2>tradional cookie with sessionid</h2>
+                <img src="img/basic-session-cookie.png">
+            </section>
+            <section>
+                <h2>Architecture LB + multiple srvs</h2>
+                <img src="img/basic-architecture.png">
+            </section>
+            <section>
+                <h2>Adding shared mem</h2>
+                <img src="img/basic-arch-shared-mem.png">
+            </section>
+            <section>
+                <h2>Using JWT</h2>
+                <img src="img/basic-jwt.png">
+            </section>
+            <section>
+                <h2>Microservices</h2>
+                <img src="img/basic-microservice.png">
+            </section>
+        </section>
+        <section>
+            <section class="fragmented">
+                <h2>Pro's</h2>
+                <ul>
+                    <li>Simple load balancing</li>
+                    <li>Multi language implementations (Java, .NET, Javascript, etc.)</li>
+                    <li>Micro service arch ready</li>
+                </ul>
+            </section>
+            <section class="fragmented">
+                <h2>Con's</h2>
+                <ul>
+                    <li>Token revokation</li>
+                    <li>Secret key compromized...</li>
+                    <li>Size of header</li>
+                </ul>
+            </section>
+        </section>
+        <section>
+            <h2>Info:</h2>
+            <ul>
+                <li>jwt.io/auth0.com</li>
+                <li>owasp.org</li>
+            </ul>
+        </section>
+        <section class="concave">
+            <h1>THE END</h1>
+        </section>
+    </div>
+
+</div>
+
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.min.js"></script>
+
+<script>
+
+    // More info https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        hideAddressBar: true,
+        width: 1200,
+        height: 800,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        // Bounds for smallest/largest possible scale to apply to content
+        minScale: 0.2,
+        maxScale: 1.5,
+        transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        dependencies: [
+            {
+                src: 'lib/js/classList.js', condition: function () {
+                return !document.body.classList;
+            }
+            },
+            {
+                src: 'plugin/markdown/marked.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            }
+            },
+            {
+                src: 'plugin/markdown/markdown.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            }
+            },
+            {
+                src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            }
+            },
+            {src: 'plugin/zoom-js/zoom.js', async: true},
+            {src: 'plugin/notes/notes.js', async: true}
+        ]
+    });
+</script>
+</body>
+</html>
