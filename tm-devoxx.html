@@ -14,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <link rel="stylesheet" href="css/reveal.min.css">
-    <link rel="stylesheet" href="css/theme/sky.css" id="theme">
+    <link rel="stylesheet" href="css/theme/black.css" id="theme">
 
     <!-- Theme used for syntax highlighting of code -->
     <link rel="stylesheet" href="lib/css/zenburn.css">
@@ -42,28 +42,123 @@
         </section>
         <section>
             <h1>Devoxx 2016</h1>
-            <h3>Effective API design</h3>
+            <h3>100% stateless with JWT</h3>
             <p>
                 <small>Created by <a href="http://wageurts.github.io">Dennis Geurts</a> / <a
                         href="http://github.com/wageurts">Github</a></small>
             </p>
         </section>
         <section>
-            <h2>100% stateless with JWT</h2>
             <p>Talk by Hubert Sablonnière</p>
+            <p>Techie @ OpenDevise</p>
         </section>
         <section>
             <section>
-                <h2>JSON web tokens</h2>
+                <h2>What is or what are JWT's?</h2>
             </section>
             <section>
-                <h2>Where are we using API's?</h2>
+                <section><span><h3>JSON Web Tokens are an open, industry standard <a
+                        href="https://tools.ietf.org/html/rfc7519" target="_blank ">RFC 7159</a> method for representing
+                    claims securely between two parties.</h3></span></section>
+            </section>
+        </section>
+        <section>
+            <section><h2>Claims..?!?!</h2></section>
+            <section>
+                <p>Claims are statements about an entity (typically, the user) and additional metadata.</p>
             </section>
             <section>
-                <h2>Local vs. remote API?</h2>
+                <h2>Different type of claims</h2>
+                <ol>
+                    <li>Resevered claims. (eg. iss, exp)</li>
+                    <li>Public claims. -> IANA JWT reg.</li>
+                    <li>Private claims.</li>
+                </ol>
+            </section>
+        </section>
+        <section>
+            <section><h2>How is JWT assembled?</h2></section>
+            <section class="fragmented">
+                <h2><span class="fragment highlight-red">HE4D3R</span>.<span
+                        class="fragment highlight-blue">P4YL0AD</span>.<span
+                        class="fragment highlight-green">S1GN4TUR3</span></h2>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>Header</h2>
+                <ol>
+                    <li>Algoritme</li>
+                    <li>Type token</li>
+                </ol>
+            </section>
+            <section>
+                <pre><code data-trim
+                           data-noescape>Base64.getEncoder().encode('{"alg":"HS256","typ":"JWT"}');</code></pre>
+                <p>=</p>
+                <pre><code data-trim data-noescape>eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9</code></pre>
+            </section>
+        </section>
+        <section>
+            <section>
+                <h2>Payload</h2>
+                <ol>
+                    <li>claims...</li>
+                    <li>claims...</li>
+                    <li>claims...</li>
+                </ol>
+            </section>
+            <section>
+                <pre><code data-trim
+                           data-noescape>Base64.getEncoder().encode('{"iss":"me","exp":"14566987532", "......"}');</code></pre>
+                <p>=</p>
+                <pre><code data-trim data-noescape>eyJpc3MiOiJNRSIsImV4cCI6IjE0NTk4NzU2MzIxIiwiLi4uLi4uIn0=</code></pre>
             </section>
         </section>
 
+        <section>
+            <section>
+                <h2>Signature</h2>
+                <ol>
+                    <li>Shared secret</li>
+                    <li>pub-priv key</li>
+                    <li>HE4D3R.P4YL0AD</li>
+                </ol>
+            </section>
+            <section>
+                <pre><code data-trim
+                           data-noescape>
+            String secret = "secret";
+            String message = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJNRSIsImV4cCI6IjE0NTk4NzU2MzIxIiwiLi4uLi4uIn0=";
+
+            Mac sha256_HMAC = Mac.getInstance("HmacSHA256");
+            SecretKeySpec secret_key = new SecretKeySpec(secret.getBytes(), "HmacSHA256");
+            sha256_HMAC.init(secret_key);
+
+            Base64.getEncoder().encode(sha256_HMAC.doFinal(message.getBytes()));</code></pre>
+                <p>=</p>
+                <pre><code data-trim data-noescape>jY06rX3XcN/0L+5TdVD6dNxTZAN0fcqQLxXfxHDEomQ=</code></pre>
+            </section>
+        </section>
+
+        <section>
+            <section class="fragmented">
+                <h2>So...</h2>
+                <span class="fragment">
+                <h2>The entire token is added</h2>
+                <h2>to the http header.</h2>
+                    </span>
+            </section>
+            <section>
+                <h2>HTTP Header</h2>
+                <pre><code data-trim
+                           data-noescape>Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJNRSIsImV4cCI6IjE0NTk4NzU2MzIxIiwiLi4uLi4uIn0=.jY06rX3XcN/0L+5TdVD6dNxTZAN0fcqQLxXfxHDEomQ=</code></pre>
+            </section>
+        </section>
+
+        <section>
+
+        </section>
 
         <section class="concave">
             <h1>THE END</h1>
@@ -84,6 +179,15 @@
         history: true,
         center: true,
         hideAddressBar: true,
+        width: 1200,
+        height: 700,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        // Bounds for smallest/largest possible scale to apply to content
+        minScale: 0.2,
+        maxScale: 1.5,
         transition: 'slide', // none/fade/slide/convex/concave/zoom
 
         // More info https://github.com/hakimel/reveal.js#dependencies
